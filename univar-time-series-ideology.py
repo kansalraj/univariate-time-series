@@ -33,8 +33,8 @@ from statsmodels.tsa.stattools import adfuller
 def test_stationarity(timeseries):
     
     #Determing rolling statistics
-    rolmean = pd.rolling_mean(timeseries, window=12)
-    rolstd = pd.rolling_std(timeseries, window=12)
+    rolmean = timeseries.rolling(12).mean()
+    rolstd = timeseries.rolling(12).std()
 
     #Plot rolling statistics:
     orig = plt.plot(timeseries, color='blue',label='Original')
@@ -51,3 +51,63 @@ def test_stationarity(timeseries):
     for key,value in dftest[4].items():
         dfoutput['Critical Value (%s)'%key] = value
     print (dfoutput)
+    
+    
+test_stationarity(ts)    
+    
+ts_log = np.log(ts)
+plt.plot(ts_log)
+
+
+moving_avg = ts_log.rolling(12).mean()
+plt.plot(ts_log)
+plt.plot(moving_avg, color='red')    
+
+ts_log_moving_avg_diff = ts_log - moving_avg
+ts_log_moving_avg_diff.head(12)
+
+
+
+ts_log_moving_avg_diff.dropna(inplace=True)
+test_stationarity(ts_log_moving_avg_diff)
+
+
+
+
+expwighted_avg = pd.DataFrame.ewm(ts_log, halflife=12).mean()
+plt.plot(ts_log)
+plt.plot(expwighted_avg, color='red')
+
+    
+
+
+ts_log_ewma_diff = ts_log - expwighted_avg
+test_stationarity(ts_log_ewma_diff)
+    
+ts_log_diff = ts_log - ts_log.shift()
+plt.plot(ts_log_diff)
+
+ts_log_diff.dropna(inplace=True)
+test_stationarity(ts_log_diff)
+    
+    
+    
+    
+    
+    
+    
+    
+    e
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
